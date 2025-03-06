@@ -216,6 +216,8 @@ function gPop() {
 function gPush() {
     MS.push(modelMatrix);
 }
+var angle = 0; // Camera angle around the scene
+var radius = 10;
 
 
 function render(timestamp) {
@@ -250,64 +252,28 @@ function render(timestamp) {
 		// We can do this with angles or positions, the whole x,y,z position, or just one dimension. It is up to us!
 		dt = (timestamp - prevTime) / 1000.0;
 		prevTime = timestamp;
-	}
-	
-	// Sphere example
-	gPush();
-		// Put the sphere where it should be!
-		gTranslate(spherePosition[0],spherePosition[1],spherePosition[2]);
-		gPush();
-		{
-			// Draw the sphere!
-			setColor(vec4(1.0,0.0,0.0,1.0));
-			drawSphere();
-		}
-		gPop();
-	gPop();
-    
-	// Cube example
-	gPush();
-		gTranslate(cubePosition[0],cubePosition[1],cubePosition[2]);
-		gPush();
-		{
-			setColor(vec4(0.0,1.0,0.0,1.0));
-			// Here is an example of integration to rotate the cube around the y axis at 30 degrees per second
-			// new cube rotation around y = current cube rotation around y + 30deg/s*dt
-			cubeRotation[1] = cubeRotation[1] + 30*dt;
-			// This calls a simple helper function to apply the rotation (theta, x, y, z), 
-			// where x,y,z define the axis of rotation. Here is is the y axis, (0,1,0).
-			gRotate(cubeRotation[1],0,1,0);
-			drawCube();
-		}
-		gPop();
-	gPop();
-    
-	// Cylinder example
-	gPush();
-		gTranslate(cylinderPosition[0],cylinderPosition[1],cylinderPosition[2]);
-		gPush();
-		{
-			setColor(vec4(0.0,0.0,1.0,1.0));
-			cylinderRotation[1] = cylinderRotation[1] + 60*dt;
-			gRotate(cylinderRotation[1],0,1,0);
-			drawCylinder();
-		}
-		gPop();
-	gPop();	
-    
-	// Cone example
-	gPush();
-		gTranslate(conePosition[0],conePosition[1],conePosition[2]);
-		gPush();
-		{
-			setColor(vec4(1.0,1.0,0.0,1.0));
-			coneRotation[1] = coneRotation[1] + 90*dt;
-			gRotate(coneRotation[1],0,1,0);
-			drawCone();
-		}
-		gPop();
-	gPop();
-    
+        angle += dt * 30; // Adjust speed by changing this factor
+        var radians = radians(angle);
+        eye = vec3(radius * Math.sin(radians), 0, radius * Math.cos(radians));
+	}else {
+        eye = vec3(0, 0, 10); // Default static camera
+    }
+    //adding scenary 
+    //starting with floor
+    gPush();
+        //lower "road"
+        gTranslate(0,-6,0);
+        gScale(6,0.8,1);
+        setColor(vec4(0.0448, 0.560, 0.131));
+        drawCube();
+    gPop();
+    gPush();
+        //uper "road"
+        gTranslate(0,-4,0);
+        gScale(6,0.5,1);
+        setColor(vec4(0.0448, 0.560, 0.131));
+        drawCube();
+    gPop();
     if( animFlag )
         window.requestAnimFrame(render);
 }
